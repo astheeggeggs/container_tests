@@ -142,7 +142,7 @@ Rscript step2_SPAtests.R \
     --SAIGEOutputFile=./output_tmp/example_binary_positive_signal.assoc.step2.txt \
     --LOCO=FALSE
 
-cd output
+cd output_tmp
 md5sum * > ../checklist.chk # generates a list of checksums for any file that matches *
 md5sum -c ../checklist.chk
 
