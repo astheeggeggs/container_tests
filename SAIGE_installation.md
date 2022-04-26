@@ -2,18 +2,22 @@
 
 First, clone this repository, so that you have access to the shell script to run all the tests and create md5sums.
 
+```
 git clone src_branch=main
 repo_src_url=https://github.com/BRaVa-genetics/container_tests
 repo_src_url=https://github.com/astheeggeggs/container_tests
 git clone --depth 1 -b $src_branch $repo_src_url
 tests_dir=$(pwd)/container_tests
+```
 
 Second, clone the SAIGE github repository. This isn't explicity required for docker (because the test data can be accessed in docker), but it means that everyone's file structures will be equivalent and the test script will work for both singularity and docker containers.
 
+```
 src_branch=main
 repo_src_url=https://github.com/saigegit/SAIGE
 git clone --depth 1 -b $src_branch $repo_src_url
 saige_github_extdata="$(pwd)/SAIGE/extdata"
+```
 
 # Docker
 
