@@ -1,9 +1,6 @@
 #!/bin/bash
 
-if [ -d "output_tmp" ] 
-then
-    mkdir output_tmp
-fi
+mkdir output_tmp
 
 Rscript createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \

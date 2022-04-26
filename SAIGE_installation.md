@@ -70,14 +70,14 @@ replacing 1.0.5 with the latest and greatest version of SAIGE (if updated).
 Start a singularity shell, binding the test and SAIGE extdata folders.
 
 ```
-singularity shell --bind ${saige_github_extdata},${tests_dir} ${saige_singularity}/saige.${version}.sif
+singularity shell --bind ${saige_github_extdata},${tests_dir} ${saige_singularity_dir}/saige.${version}.sif
 ```
 
 Now, run the bash script to run all the SAIGE examples, and create md5sums of the output files.
 
 ```
 cd ${saige_github_extdata}
-bash ${tests_dir}/run_saige_examples.sh
+bash ${tests_dir}/SAIGE_examples.sh
 ```
 
 If git is not available on your cluster, you will need to clone the repository locally and move the extdata and bash testing script folder up through scp or an airlock.
