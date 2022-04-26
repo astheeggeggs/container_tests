@@ -1,24 +1,25 @@
-# Docker
-
-Install docker, you'll need sudo access to do this, so if it's not present on the HPC cluster (if you're using that) you'll need to consider the other alternatives, or contact the cluster admins. First, check if singularity is installed as this is also a straightforward way to get SAIGE up and running.
+# Initial steps
 
 First, clone this repository, so that you have access to the shell script to run all the tests and create md5sums.
 
-```
 git clone src_branch=main
 repo_src_url=https://github.com/BRaVa-genetics/container_tests
+repo_src_url=https://github.com/astheeggeggs/container_tests
 git clone --depth 1 -b $src_branch $repo_src_url
 tests_dir=$(pwd)/container_tests
-```
 
 Second, clone the SAIGE github repository. This isn't explicity required for docker (because the test data can be accessed in docker), but it means that everyone's file structures will be equivalent and the test script will work for both singularity and docker containers.
 
-```
 src_branch=main
 repo_src_url=https://github.com/saigegit/SAIGE
 git clone --depth 1 -b $src_branch $repo_src_url
 saige_github_extdata="$(pwd)/SAIGE/extdata"
-```
+
+# Docker
+
+Be sure that you've run all the initial steps.
+
+Install docker, you'll need sudo access to do this, so if it's not present on the HPC cluster (if you're using that) you'll need to consider the other alternatives, or contact the cluster admins. First, check if singularity is installed as this is also a straightforward way to get SAIGE up and running.
 
 Next, pull the latest SAIGE docker.
 
@@ -48,28 +49,19 @@ This is very similar to docker in terms of installation and subsequent usage. Bu
 
 Singularity is much more likely to be available on the cluster you're using.
 
+First, be sure that you've run the initial steps.
+
+Next, pull the SAIGE singularity container.
+
 ```
 version="1.0.5"
-```
-
-replacing 1.0.5 with the latest and greatest version of SAIGE (if updated).
-
-```
 mkdir saige_singularity
 cd saige_singularity
 saige_singularity_dir=$(pwd)
 singularity pull saige.${version}.sif docker://wzhou88/saige:${version}
 ```
 
-Clone the SAIGE github repository.
-
-```
-cd ..
-src_branch=main
-repo_src_url=https://github.com/saigegit/SAIGE
-git clone --depth 1 -b $src_branch $repo_src_url
-saige_github_extdata="$(pwd)/SAIGE/extdata"
-```
+replacing 1.0.5 with the latest and greatest version of SAIGE (if updated).
 
 Start a singularity shell, binding the test and SAIGE extdata folders.
 
