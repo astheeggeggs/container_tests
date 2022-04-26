@@ -3,7 +3,7 @@
 First, clone this repository, so that you have access to the shell script to run all the tests and create md5sums.
 
 ```
-git clone src_branch=main
+src_branch=main
 repo_src_url=https://github.com/BRaVa-genetics/container_tests
 repo_src_url=https://github.com/astheeggeggs/container_tests
 git clone --depth 1 -b $src_branch $repo_src_url
