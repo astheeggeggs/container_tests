@@ -37,7 +37,7 @@ replacing 1.0.5 with the latest and greatest version of SAIGE (if updated).
 Run the docker, including the test and SAIGE extdata folders as volumes.
 
 ```
-docker run -i -t wzhou88/saige:${version} -v ${saige_github_extdata} -v ${tests_dir}
+docker run -v ${saige_github_extdata}:${saige_github_extdata} -v ${tests_dir}:${tests_dir} -i -t wzhou88/saige:${version}
 ```
 
 Now, run the bash script to run all the SAIGE examples, and create md5sums of the output files.
