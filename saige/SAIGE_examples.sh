@@ -1,22 +1,21 @@
 #!/bin/bash
 
-if [ -d "output" ] 
+if [ -d "output_tmp" ] 
 then
-    mv output output_tmp
-    mkdir output
+    mkdir output_tmp
 fi
 
 Rscript createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
     --nThreads=4 \
-    --outputPrefix=./output/sparseGRM \
+    --outputPrefix=./output_tmp/sparseGRM \
     --numRandomMarkerforSparseKin=2000 \
     --relatednessCutoff=0.125
 
 Rscript createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
     --nThreads=4 \
-    --outputPrefix=./output/sparseGRM \
+    --outputPrefix=./output_tmp/sparseGRM \
     --numRandomMarkerforSparseKin=1000 \
     --relatednessCutoff=0.125
 
@@ -34,7 +33,7 @@ Rscript step1_fitNULLGLMM.R \
     --qCovarColList=a9,a10 \
     --sampleIDColinphenoFile=IID \
     --traitType=binary \
-    --outputPrefix=./output/example_binary \
+    --outputPrefix=./output_tmp/example_binary \
     --nThreads=2 \
     --IsOverwriteVarianceRatioFile=TRUE
 
@@ -42,12 +41,12 @@ Rscript step2_SPAtests.R \
     --vcfFile=./input/genotype_100markers.vcf.gz \
     --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi \
     --vcfField=GT \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf.txt \
+    --SAIGEOutputFile=./output_tmp/genotype_100markers_marker_vcf.txt \
     --chrom=1 \
     --minMAF=0 \
     --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary.rda \
-    --varianceRatioFile=./output/example_binary.varianceRatio.txt
+    --GMMATmodelFile=./output_tmp/example_binary.rda \
+    --varianceRatioFile=./output_tmp/example_binary.varianceRatio.txt
 
 # Binary trait (–traitType=binary)
 # Fitting the null model using a sparse GRM (–useSparseGRMtoFitNULL=TRUE, –sparseGRMFile, –sparseGRMSampleIDFile)
@@ -57,8 +56,8 @@ Rscript step2_SPAtests.R \
 # The effect sizes of markers with p-value <= pCutoffforFirth will be estimated through the Firth’s Bias-Reduced Logistic Regression –is_Firth_beta=TRUE and –pCutoffforFirth=0.01 (NOTE this option is under evaluation)
 
 Rscript step1_fitNULLGLMM.R \
-    --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
-    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
+    --sparseGRMFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
+    --sparseGRMSampleIDFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
     --useSparseGRMtoFitNULL=TRUE \
     --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
     --phenoCol=y_binary \
@@ -66,20 +65,20 @@ Rscript step1_fitNULLGLMM.R \
     --qCovarColList=a9,a10 \
     --sampleIDColinphenoFile=IID \
     --traitType=binary \
-    --outputPrefix=./output/example_binary_sparseGRM
+    --outputPrefix=./output_tmp/example_binary_sparseGRM
 
 Rscript step2_SPAtests.R \
     --bedFile=./input/genotype_100markers.bed \
     --bimFile=./input/genotype_100markers.bim \
     --famFile=./input/genotype_100markers.fam \
     --AlleleOrder=alt-first \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_plink_step1withSparseGRM_Firth.txt \
+    --SAIGEOutputFile=./output_tmp/genotype_100markers_marker_plink_step1withSparseGRM_Firth.txt \
     --minMAF=0 \
     --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary_sparseGRM.rda \
+    --GMMATmodelFile=./output_tmp/example_binary_sparseGRM.rda \
     --is_output_moreDetails=TRUE \
-    --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
-    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
+    --sparseGRMFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
+    --sparseGRMSampleIDFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
     --is_Firth_beta=TRUE \
     --pCutoffforFirth=0.01 \
     --LOCO=FALSE 
@@ -92,8 +91,8 @@ Rscript step2_SPAtests.R \
 
 Rscript step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
-    --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
-    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
+    --sparseGRMFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
+    --sparseGRMSampleIDFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
     --useSparseGRMtoFitNULL=TRUE \
     --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
     --phenoCol=y_quantitative \
@@ -102,19 +101,19 @@ Rscript step1_fitNULLGLMM.R \
     --sampleIDColinphenoFile=IID \
     --traitType=quantitative \
     --invNormalize=TRUE \
-    --outputPrefix=./output/example_quantitative_sparseGRM
+    --outputPrefix=./output_tmp/example_quantitative_sparseGRM
 
 Rscript step2_SPAtests.R \
     --vcfFile=./input/genotype_100markers.vcf.gz    \
     --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi     \
     --vcfField=GT \
     --chrom=1 \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf_step1withSparseGRM.txt \
+    --SAIGEOutputFile=./output_tmp/genotype_100markers_marker_vcf_step1withSparseGRM.txt \
     --minMAF=0 \
     --minMAC=20 \
-    --GMMATmodelFile=./output/example_quantitative_sparseGRM.rda \
+    --GMMATmodelFile=./output_tmp/example_quantitative_sparseGRM.rda \
     --is_output_moreDetails=TRUE \
-    --varianceRatioFile=./output/example_quantitative_sparseGRM.varianceRatio.txt \
+    --varianceRatioFile=./output_tmp/example_quantitative_sparseGRM.varianceRatio.txt \
     --LOCO=FALSE
 
 # Binary trait (–traitType=binary)
@@ -130,7 +129,7 @@ Rscript step1_fitNULLGLMM.R \
     --covarColList=x1,x2 \
     --sampleIDColinphenoFile=IID \
     --traitType=binary \
-    --outputPrefix=./output/example_binary_positive_signal \
+    --outputPrefix=./output_tmp/example_binary_positive_signal \
     --nThreads=4 \
     --IsOverwriteVarianceRatioFile=TRUE
 
@@ -141,9 +140,9 @@ Rscript step2_SPAtests.R \
     --chrom=1 \
     --minMAF=0.0001 \
     --minMAC=1 \
-    --GMMATmodelFile=./output/example_binary_positive_signal.rda \
-    --varianceRatioFile=./output/example_binary_positive_signal.varianceRatio.txt \
-    --SAIGEOutputFile=./output/example_binary_positive_signal.assoc.step2.txt \
+    --GMMATmodelFile=./output_tmp/example_binary_positive_signal.rda \
+    --varianceRatioFile=./output_tmp/example_binary_positive_signal.varianceRatio.txt \
+    --SAIGEOutputFile=./output_tmp/example_binary_positive_signal.assoc.step2.txt \
     --LOCO=FALSE
 
 cd output
