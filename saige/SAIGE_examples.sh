@@ -6,6 +6,13 @@ then
     mkdir output
 fi
 
+Rscript createSparseGRM.R \
+    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
+    --nThreads=4  \
+    --outputPrefix=./output/sparseGRM \
+    --numRandomMarkerforSparseKin=2000 \
+    --relatednessCutoff=0.125
+
 Rscript step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
     --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
@@ -124,13 +131,6 @@ Rscript step2_SPAtests.R \
     --is_output_moreDetails=TRUE \
     --condition=1:13:A:C,1:79:A:C
 
-Rscript createSparseGRM.R \
-    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
-    --nThreads=4  \
-    --outputPrefix=./output/sparseGRM \
-    --numRandomMarkerforSparseKin=2000 \
-    --relatednessCutoff=0.125
-
 cd output
 md5sum * > ../checklist.chk # generates a list of checksums for any file that matches *
 md5sum -c ../checklist.chk
@@ -138,5 +138,6 @@ md5sum -c ../checklist.chk
 cd ../output_tmp
 md5sum -c ../checklist.chk
 
+cd ..
 rm output
 mv output_tmp output
