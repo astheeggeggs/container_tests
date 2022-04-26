@@ -8,10 +8,23 @@ fi
 
 Rscript createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
-    --nThreads=4  \
+    --nThreads=4 \
     --outputPrefix=./output/sparseGRM \
     --numRandomMarkerforSparseKin=2000 \
     --relatednessCutoff=0.125
+
+Rscript createSparseGRM.R \
+    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
+    --nThreads=4 \
+    --outputPrefix=./output/sparseGRM \
+    --numRandomMarkerforSparseKin=1000 \
+    --relatednessCutoff=0.125
+
+# Binary trait (–traitType=binary)
+# Fitting the null model using a full GRM that will be calculated on-the-fly using genotypes in the plink file (–plinkFile=)
+# Estimating the variance ratio in Step 1, which will be used as input for Step 2
+# Using 2 CPUs for step 1 (–nThreads)
+# a9 and a10 are cateogorical covariats and will be re-write for different levels (–qCovarColList)
 
 Rscript step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
@@ -22,61 +35,8 @@ Rscript step1_fitNULLGLMM.R \
     --sampleIDColinphenoFile=IID \
     --traitType=binary \
     --outputPrefix=./output/example_binary \
-    --nThreads=24 \
+    --nThreads=2 \
     --IsOverwriteVarianceRatioFile=TRUE
-
-Rscript step1_fitNULLGLMM.R \
-    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
-    --useSparseGRMtoFitNULL=FALSE \
-    --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
-    --phenoCol=y_quantitative \
-    --covarColList=x1,x2,a9,a10 \
-    --qCovarColList=a9,a10 \
-    --sampleIDColinphenoFile=IID \
-    --invNormalize=TRUE \
-    --traitType=quantitative \
-    --outputPrefix=./output/example_quantitative \
-    --nThreads=24 \
-    --IsOverwriteVarianceRatioFile=TRUE
-
-Rscript step1_fitNULLGLMM.R     \
-    --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx   \
-    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt     \
-    --useSparseGRMtoFitNULL=TRUE    \
-    --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
-    --phenoCol=y_binary \
-    --covarColList=x1,x2,a9,a10 \
-    --qCovarColList=a9,a10  \
-    --sampleIDColinphenoFile=IID \
-    --traitType=binary        \
-    --outputPrefix=./output/example_binary_sparseGRM
-
-Rscript step2_SPAtests.R \
-    --bgenFile=./input/genotype_100markers.bgen \
-    --bgenFileIndex=./input/genotype_100markers.bgen.bgi \
-    --sampleFile=./input/samplelist.txt \
-    --AlleleOrder=ref-first \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_bgen_Firth.txt \
-    --chrom=1 \
-    --minMAF=0 \
-    --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary.rda \
-    --varianceRatioFile=./output/example_binary.varianceRatio.txt \
-    --is_Firth_beta=TRUE \
-    --pCutoffforFirth=0.1
-
-Rscript step2_SPAtests.R \
-    --bedFile=./input/genotype_100markers.bed \
-    --bimFile=./input/genotype_100markers.bim \
-    --famFile=./input/genotype_100markers.fam \
-    --AlleleOrder=alt-first \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_plink.txt \
-    --chrom=1 \
-    --minMAF=0 \
-    --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary.rda \
-    --varianceRatioFile=./output/example_binary.varianceRatio.txt \
-    --is_output_moreDetails=TRUE
 
 Rscript step2_SPAtests.R \
     --vcfFile=./input/genotype_100markers.vcf.gz \
@@ -87,28 +47,33 @@ Rscript step2_SPAtests.R \
     --minMAF=0 \
     --minMAC=20 \
     --GMMATmodelFile=./output/example_binary.rda \
-    --varianceRatioFile=./output/example_binary.varianceRatio.txt \
-    --is_output_moreDetails=TRUE
+    --varianceRatioFile=./output/example_binary.varianceRatio.txt
 
-Rscript step2_SPAtests.R \
-    --vcfFile=./input/genotype_100markers.vcf.gz \
-    --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi \
-    --vcfField=GT \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf_step1withSparseGRM.txt \
-    --chrom=1 \
-    --minMAF=0 \
-    --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary_sparseGRM.rda \
-    --is_output_moreDetails=TRUE \
+# Binary trait (–traitType=binary)
+# Fitting the null model using a sparse GRM (–useSparseGRMtoFitNULL=TRUE, –sparseGRMFile, –sparseGRMSampleIDFile)
+# Do not estimate the variance ratio in Step 1.
+# Only one CPU is used when a sparse GRM is used for fitting the null model and LOCO won’t be applied
+# Use PLINK input for the genotypes/dosages in Step 2
+# The effect sizes of markers with p-value <= pCutoffforFirth will be estimated through the Firth’s Bias-Reduced Logistic Regression –is_Firth_beta=TRUE and –pCutoffforFirth=0.01 (NOTE this option is under evaluation)
+
+Rscript step1_fitNULLGLMM.R \
     --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
-    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt
+    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
+    --useSparseGRMtoFitNULL=TRUE \
+    --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
+    --phenoCol=y_binary \
+    --covarColList=x1,x2,a9,a10 \
+    --qCovarColList=a9,a10 \
+    --sampleIDColinphenoFile=IID \
+    --traitType=binary \
+    --outputPrefix=./output/example_binary_sparseGRM
 
 Rscript step2_SPAtests.R \
-    --vcfFile=./input/genotype_100markers.vcf.gz \
-    --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi \
-    --vcfField=GT \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf_step1withSparseGRM.txt \
-    --chrom=1 \
+    --bedFile=./input/genotype_100markers.bed \
+    --bimFile=./input/genotype_100markers.bim \
+    --famFile=./input/genotype_100markers.fam \
+    --AlleleOrder=alt-first \
+    --SAIGEOutputFile=./output/genotype_100markers_marker_plink_step1withSparseGRM_Firth.txt \
     --minMAF=0 \
     --minMAC=20 \
     --GMMATmodelFile=./output/example_binary_sparseGRM.rda \
@@ -116,28 +81,78 @@ Rscript step2_SPAtests.R \
     --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
     --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
     --is_Firth_beta=TRUE \
-    --pCutoffforFirth=0.01
+    --pCutoffforFirth=0.01 \
+    --LOCO=FALSE 
+
+# Quantitative trait (–traitType=quantitative) and needs inverse normalization (–invNormalize=TRUE)
+# Fitting the null model using a sparse GRM (–useSparseGRMtoFitNULL=TRUE, –sparseGRMFile, –sparseGRMSampleIDFile)
+# Estimate the variance ratio in Step 1 (–plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr)
+# Only one CPU is used when a sparse GRM is used for fitting the null model and LOCO won’t be applied
+# –chrom needs to be specified for VCF input
+
+Rscript step1_fitNULLGLMM.R \
+    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
+    --sparseGRMFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
+    --sparseGRMSampleIDFile=output/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
+    --useSparseGRMtoFitNULL=TRUE \
+    --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
+    --phenoCol=y_quantitative \
+    --covarColList=x1,x2,a9,a10 \
+    --qCovarColList=a9,a10 \
+    --sampleIDColinphenoFile=IID \
+    --traitType=quantitative \
+    --invNormalize=TRUE \
+    --outputPrefix=./output/example_quantitative_sparseGRM
 
 Rscript step2_SPAtests.R \
-    --vcfFile=./input/genotype_100markers.vcf.gz \
-    --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi \
+    --vcfFile=./input/genotype_100markers.vcf.gz    \
+    --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi     \
     --vcfField=GT \
-    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf_cond.txt \
     --chrom=1 \
+    --SAIGEOutputFile=./output/genotype_100markers_marker_vcf_step1withSparseGRM.txt \
     --minMAF=0 \
     --minMAC=20 \
-    --GMMATmodelFile=./output/example_binary.rda \
-    --varianceRatioFile=./output/example_binary.varianceRatio.txt \
+    --GMMATmodelFile=./output/example_quantitative_sparseGRM.rda \
     --is_output_moreDetails=TRUE \
-    --condition=1:13:A:C,1:79:A:C
+    --varianceRatioFile=./output/example_quantitative_sparseGRM.varianceRatio.txt \
+    --LOCO=FALSE
+
+# Binary trait (–traitType=binary)
+# Fitting the null model using a full GRM that will be calculated on-the-fly using genotypes in the plink file (–plinkFile=)
+# Estimating the variance ratio in Step 1, which will be used as input for Step 2
+# Overwrite the existing step 1 output –IsOverwriteVarianceRatioFile=TRUE
+# p.value in Step 2 for the marker is ~3.74 x 10^-7
+
+Rscript step1_fitNULLGLMM.R \
+    --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
+    --phenoFile=./input/Prev_0.1_nfam_1000.pheno_positive_pheno.txt \
+    --phenoCol=y \
+    --covarColList=x1,x2 \
+    --sampleIDColinphenoFile=IID \
+    --traitType=binary \
+    --outputPrefix=./output/example_binary_positive_signal \
+    --nThreads=4 \
+    --IsOverwriteVarianceRatioFile=TRUE
+
+Rscript step2_SPAtests.R \
+    --vcfFile=./input/nfam_1000_MAF0.2_nMarker1_nseed200.vcf.gz \
+    --vcfFileIndex=./input/nfam_1000_MAF0.2_nMarker1_nseed200.vcf.gz.tbi \
+    --vcfField=GT \
+    --chrom=1 \
+    --minMAF=0.0001 \
+    --minMAC=1 \
+    --GMMATmodelFile=./output/example_binary_positive_signal.rda \
+    --varianceRatioFile=./output/example_binary_positive_signal.varianceRatio.txt \
+    --SAIGEOutputFile=./output/example_binary_positive_signal.assoc.step2.txt \
+    --LOCO=FALSE
 
 cd output
 md5sum * > ../checklist.chk # generates a list of checksums for any file that matches *
 md5sum -c ../checklist.chk
 
-cd ../output_tmp
-md5sum -c ../checklist.chk
+# cd ../output_tmp
+# md5sum -c ../checklist.chk
 
 cd ..
-rm output
+rm -r output
 mv output_tmp output
