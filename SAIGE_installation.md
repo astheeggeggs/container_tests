@@ -64,7 +64,7 @@ saige_singularity_dir=$(pwd)
 singularity pull saige.${version}.sif docker://wzhou88/saige:${version}
 ```
 
-replacing 1.0.5 with the latest and greatest version of SAIGE (if updated).
+replacing 1.0.7 with the latest and greatest version of SAIGE (if updated).
 
 Start a singularity shell, binding the test and SAIGE extdata folders.
 
