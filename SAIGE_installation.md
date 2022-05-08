@@ -4,7 +4,6 @@ First, clone this repository, so that you have access to the shell script to run
 
 ```
 src_branch=main
-repo_src_url=https://github.com/BRaVa-genetics/container_tests
 repo_src_url=https://github.com/astheeggeggs/container_tests
 git clone --depth 1 -b $src_branch $repo_src_url
 tests_dir=$(pwd)/container_tests
@@ -28,7 +27,7 @@ Install docker, you'll need sudo access to do this, so if it's not present on th
 Next, pull the latest SAIGE docker.
 
 ```
-version="1.0.5"
+version="1.0.7"
 docker pull wzhou88/saige:${version}
 ```
 
@@ -58,7 +57,7 @@ First, be sure that you've run the initial steps.
 Next, pull the SAIGE singularity container.
 
 ```
-version="1.0.5"
+version="1.0.7"
 mkdir saige_singularity
 cd saige_singularity
 saige_singularity_dir=$(pwd)
