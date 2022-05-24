@@ -6,7 +6,7 @@ First, clone this repository, so that you have access to the shell script to run
 src_branch=main
 repo_src_url=https://github.com/astheeggeggs/container_tests
 git clone --depth 1 -b $src_branch $repo_src_url
-tests_dir=$(pwd)/container_tests
+export tests_dir=$(pwd)/container_tests
 ```
 
 Second, clone the SAIGE github repository. This isn't explicity required for docker (because the test data can be accessed in docker), but it means that everyone's file structures will be equivalent and the test script will work for both singularity and docker containers.
@@ -15,7 +15,7 @@ Second, clone the SAIGE github repository. This isn't explicity required for doc
 src_branch=main
 repo_src_url=https://github.com/saigegit/SAIGE
 git clone --depth 1 -b $src_branch $repo_src_url
-saige_github_extdata="$(pwd)/SAIGE/extdata"
+export saige_github_extdata="$(pwd)/SAIGE/extdata"
 ```
 
 # Docker
@@ -76,7 +76,7 @@ Now, run the bash script to run all the SAIGE examples, and create md5sums of th
 
 ```
 cd ${saige_github_extdata}
-bash ${tests_dir}/SAIGE_examples.sh
+bash ${tests_dir}/saige/SAIGE_examples.sh
 ```
 
 If git is not available on your cluster, you will need to clone the repository locally and move the extdata and bash testing script folder up through scp or an airlock.
