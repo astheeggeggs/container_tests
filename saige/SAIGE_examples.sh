@@ -2,14 +2,14 @@
 
 mkdir output_tmp
 
-Rscript createSparseGRM.R \
+Rscript --no-init-file createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
     --nThreads=4 \
     --outputPrefix=./output_tmp/sparseGRM \
     --numRandomMarkerforSparseKin=2000 \
     --relatednessCutoff=0.125
 
-Rscript createSparseGRM.R \
+Rscript --no-init-file createSparseGRM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
     --nThreads=4 \
     --outputPrefix=./output_tmp/sparseGRM \
@@ -22,7 +22,7 @@ Rscript createSparseGRM.R \
 # Using 2 CPUs for step 1 (–nThreads)
 # a9 and a10 are cateogorical covariats and will be re-write for different levels (–qCovarColList)
 
-Rscript step1_fitNULLGLMM.R \
+Rscript --no-init-file --no-init-file step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
     --phenoFile=./input/pheno_1000samples.txt_withdosages_withBothTraitTypes.txt \
     --phenoCol=y_binary \
@@ -34,7 +34,7 @@ Rscript step1_fitNULLGLMM.R \
     --nThreads=2 \
     --IsOverwriteVarianceRatioFile=TRUE
 
-Rscript step2_SPAtests.R \
+Rscript --no-init-file step2_SPAtests.R \
     --vcfFile=./input/genotype_100markers.vcf.gz \
     --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi \
     --vcfField=GT \
@@ -52,7 +52,7 @@ Rscript step2_SPAtests.R \
 # Use PLINK input for the genotypes/dosages in Step 2
 # The effect sizes of markers with p-value <= pCutoffforFirth will be estimated through the Firth’s Bias-Reduced Logistic Regression –is_Firth_beta=TRUE and –pCutoffforFirth=0.01 (NOTE this option is under evaluation)
 
-Rscript step1_fitNULLGLMM.R \
+Rscript --no-init-file step1_fitNULLGLMM.R \
     --sparseGRMFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
     --sparseGRMSampleIDFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
     --useSparseGRMtoFitNULL=TRUE \
@@ -64,7 +64,7 @@ Rscript step1_fitNULLGLMM.R \
     --traitType=binary \
     --outputPrefix=./output_tmp/example_binary_sparseGRM
 
-Rscript step2_SPAtests.R \
+Rscript --no-init-file step2_SPAtests.R \
     --bedFile=./input/genotype_100markers.bed \
     --bimFile=./input/genotype_100markers.bim \
     --famFile=./input/genotype_100markers.fam \
@@ -86,7 +86,7 @@ Rscript step2_SPAtests.R \
 # Only one CPU is used when a sparse GRM is used for fitting the null model and LOCO won’t be applied
 # –chrom needs to be specified for VCF input
 
-Rscript step1_fitNULLGLMM.R \
+Rscript --no-init-file step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly_22chr \
     --sparseGRMFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx \
     --sparseGRMSampleIDFile=output_tmp/sparseGRM_relatednessCutoff_0.125_1000_randomMarkersUsed.sparseGRM.mtx.sampleIDs.txt \
@@ -100,7 +100,7 @@ Rscript step1_fitNULLGLMM.R \
     --invNormalize=TRUE \
     --outputPrefix=./output_tmp/example_quantitative_sparseGRM
 
-Rscript step2_SPAtests.R \
+Rscript --no-init-file step2_SPAtests.R \
     --vcfFile=./input/genotype_100markers.vcf.gz    \
     --vcfFileIndex=./input/genotype_100markers.vcf.gz.csi     \
     --vcfField=GT \
@@ -119,7 +119,7 @@ Rscript step2_SPAtests.R \
 # Overwrite the existing step 1 output –IsOverwriteVarianceRatioFile=TRUE
 # p.value in Step 2 for the marker is ~3.74 x 10^-7
 
-Rscript step1_fitNULLGLMM.R \
+Rscript --no-init-file step1_fitNULLGLMM.R \
     --plinkFile=./input/nfam_100_nindep_0_step1_includeMoreRareVariants_poly \
     --phenoFile=./input/Prev_0.1_nfam_1000.pheno_positive_pheno.txt \
     --phenoCol=y \
@@ -130,7 +130,7 @@ Rscript step1_fitNULLGLMM.R \
     --nThreads=4 \
     --IsOverwriteVarianceRatioFile=TRUE
 
-Rscript step2_SPAtests.R \
+Rscript --no-init-file step2_SPAtests.R \
     --vcfFile=./input/nfam_1000_MAF0.2_nMarker1_nseed200.vcf.gz \
     --vcfFileIndex=./input/nfam_1000_MAF0.2_nMarker1_nseed200.vcf.gz.tbi \
     --vcfField=GT \
